@@ -6,7 +6,7 @@ const createProduct = asyncHandler(async (req, res) => {
   //only for admin panel
   const { title, details, category, price, stock } = req.body;
   if ((!title, !details, !category, !price, !stock)) {
-    res.status(400).json((error = "Fill in all the required Fields"));
+    res.status(400).json(("Fill in all the required Fields"));
     return;
   }
   try {
@@ -64,4 +64,10 @@ const allProducts = asyncHandler(async (req, res) => {
   res.status(200).send(prod);
 });
 
-module.exports = { createProduct, allProducts, updateProduct, deleteProduct };
+const categoryProduct=asyncHandler(async (req, res) => {
+  const key = req.query.category
+  const prod=await Product.find({category:req.query.category}).populate("seller").populate("category");
+  res.status(200).send(prod);
+});
+
+module.exports = { categoryProduct,createProduct, allProducts, updateProduct, deleteProduct };

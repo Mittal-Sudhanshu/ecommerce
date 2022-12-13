@@ -4,7 +4,7 @@ const Category = require("../models/category");
 const createCategory = asyncHandler(async (req, res) => {
   const { name } = req.body;
   if (!name) {
-    res.status(400).json(error, "Fields can't be empty");
+    res.status(400).json( "Fields can't be empty");
     return;
   }
   try {
