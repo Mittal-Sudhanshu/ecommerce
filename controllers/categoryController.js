@@ -11,7 +11,7 @@ const createCategory = asyncHandler(async (req, res) => {
     const category = await Category.create({
       name
     });
-    res.status(200).send(category);
+    res.status(200).json(category);
   } catch (err) {
     res.status(400).json("Some error occured");
     console.log(err);
