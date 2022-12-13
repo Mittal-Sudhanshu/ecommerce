@@ -9,7 +9,7 @@ const createCategory = asyncHandler(async (req, res) => {
   }
   try {
     const category = await Category.create({
-      name,
+      name
     });
     res.status(200).send(category);
   } catch (err) {
