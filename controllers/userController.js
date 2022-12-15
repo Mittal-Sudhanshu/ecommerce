@@ -80,15 +80,11 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-const protect = asyncHandler(async (req, res,next) => {
-  let token;
+const protect = asyncHandler(async (req, res) => {
+  let token=req.query.token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
+
     try {
-      token = req.headers.authorization.split(" ")[1];
       // console.log(token);
       //decodes token id
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -96,17 +92,11 @@ const protect = asyncHandler(async (req, res,next) => {
       req.user = await User.findById(decoded.id).select("-password");
       // console.log(req.user);
       res.status(200).send(JSON.stringify(req.user));
-      next();
+      // next();
     } catch (error) {
       res.status(401).send("Not authorized, token failed");
       // throw new Error("Not authorized, token failed");
     }
-  }
-
-  if (!token) {
-    res.status(401).send("Not authorized, no token");
-    // throw new Error("Not authorized, no token");
-  }
-});
+  });
 // const fogotPassword = asyncHandler(async(req, res))
 module.exports = { registerUser, authUser, protect };
