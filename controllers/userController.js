@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../config/token");
 const User = require("../models/User");
+const jwt= require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const {
   handleEmail,
@@ -78,5 +79,34 @@ const authUser = asyncHandler(async (req, res) => {
     res.status(400).json({ error: "Invalid Credentials" });
   }
 });
+
+const protect = asyncHandler(async (req, res,next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      // console.log(token);
+      //decodes token id
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // console.log(decoded);
+      req.user = await User.findById(decoded.id).select("-password");
+      // console.log(req.user);
+      res.status(200).send(JSON.stringify(req.user));
+      next();
+    } catch (error) {
+      res.status(401).send("Not authorized, token failed");
+      // throw new Error("Not authorized, token failed");
+    }
+  }
+
+  if (!token) {
+    res.status(401).send("Not authorized, no token");
+    // throw new Error("Not authorized, no token");
+  }
+});
 // const fogotPassword = asyncHandler(async(req, res))
-module.exports = { registerUser, authUser };
+module.exports = { registerUser, authUser, protect };

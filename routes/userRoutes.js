@@ -6,8 +6,9 @@ const {
   email,
   password,
 } = require("../auth/otpgenerator");
+// const {protect}=require("../middleware/authMiddleware");
 const otpValidator = require("../auth/otpValidator");
-const { registerUser, authUser } = require("../controllers/userController");
+const { registerUser, authUser,protect } = require("../controllers/userController");
 const router = express.Router();
 //post routing for creating a new user
 router.route("/").post(otpGenerator);
@@ -15,4 +16,5 @@ router.route("/").post(otpGenerator);
 router.route("/validate").post(otpValidator, registerUser);
 //post routing for authenticating a user
 router.post("/login", authUser);
+router.get("/",protect)
 module.exports = router;
