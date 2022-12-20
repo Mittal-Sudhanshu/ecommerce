@@ -14,11 +14,6 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    image:{
-      type: String,
-      // required:,
-      default:'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png'
-    },
     isAdmin: {
       type: Boolean,
       default: false,

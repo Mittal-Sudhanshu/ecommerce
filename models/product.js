@@ -21,10 +21,10 @@ const productSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
-    image:{
-        type:[Object],
-        required:true
-    },
+    // image:{
+    //     type:[Object],
+    //     required:false
+    // },
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
