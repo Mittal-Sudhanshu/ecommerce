@@ -5,6 +5,7 @@ const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const myOrderRoutes = require("./routes/myOrderRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
 const dotenv = require("dotenv");
 dotenv.config();
 const PORT = process.env.PORT || 8000;
@@ -16,6 +17,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/myOrder", myOrderRoutes);
 app.use("/api/category",categoryRoutes);
+app.use("/api/wishlist",wishlistRoutes);
 app.listen(PORT, () => {
   console.log("Server started on PORT", PORT);
 });
