@@ -7,7 +7,7 @@ const MyOrders = require("../models/myOrders");
 const createOrder = asyncHandler(async (req, res) => {
   const newOrder = {
     productId: req.body.productId,
-    count: parseInt(req.body.count),
+    count: req.body.count!=null?parseInt(req.body.count):1,
     User: req.user,
   };
   try {
