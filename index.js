@@ -1,10 +1,10 @@
 const express = require("express");
-const connectDB = require("./src/db/db");
-const userRoutes = require("./src/routes/userRoutes");
-const productRoutes = require("./src/routes/productRoutes");
-const cartRoutes = require("./src/routes/cartRoutes");
-const myOrderRoutes = require("./src/routes/myOrderRoutes");
-const categoryRoutes = require("./src/routes/categoryRoutes");
+const connectDB = require("./db/db");
+const userRoutes = require("./routes/userRoutes");
+const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const myOrderRoutes = require("./routes/myOrderRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 const app = express();
 // const Server =require("socket.io");
 // const io=Server(3000);
@@ -14,7 +14,7 @@ const app = express();
 //   console.log("connected");
 // })
 
-const wishlistRoutes = require("./src/routes/wishlistRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
 const dotenv = require("dotenv");
 dotenv.config();
 const PORT = process.env.PORT || 8000;

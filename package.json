@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
@@ -23,5 +24,8 @@
     "nodemon": "^2.0.19",
     "path": "^0.12.7",
     "socket.io": "^4.5.4"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.0.1"
   }
 }
