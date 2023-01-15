@@ -9,7 +9,8 @@ const getWishlist = asyncHandler(async (req, res) => {
         ],
       }
     : {};
-  const wishlist = await Wishlist.find(key);
+  const wishlist = await Wishlist.find(key).populate("product");
+  // wishlist=await wishlist.populate("seller");
   res.status(200).send(wishlist);
 });
 

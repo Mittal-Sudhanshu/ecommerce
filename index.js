@@ -16,6 +16,7 @@ const app = express();
 
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const dotenv = require("dotenv");
+const { PromiseProvider } = require("mongoose");
 dotenv.config();
 const PORT = process.env.PORT || 8000;
 
@@ -33,7 +34,7 @@ const server=app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:4000",
+    origin: "http://localhost:4000/",
     // credentials: true,
   },
   
@@ -42,7 +43,7 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log(socket.id);
   // io.on ("test", (message) =>console.log("hello world"));
-  // socket.on ("msg",(message) =>console.log(message));
+  // socket.on()
+  
   // socket.on ("check",(message) =>console.log(message));
-
 });

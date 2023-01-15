@@ -7,7 +7,7 @@ const MyOrders = require("../models/myOrders");
 const createOrder = asyncHandler(async (req, res) => {
   const newOrder = {
     productId: req.body.productId,
-    count: req.body.count!=null?parseInt(req.body.count):1,
+    count: req.body.count != null ? parseInt(req.body.count) : 1,
     User: req.user,
   };
   try {
@@ -41,6 +41,26 @@ const cartItems = asyncHandler(async (req, res) => {
     .populate("User");
   res.status(200).send(cart);
 });
+const updateCartItem = asyncHandler(async (req, res) => {
+  var update = req.body;
+  const cartItemId = req.params.id;
+  try {
+    if(update.count==0){
+      const cartItem = await Cart.findByIdAndDelete({ _id: cartItemId });
+      res.status(200).send(cartItem);
+      return;
+    }
+    const cartItem = await Cart.findByIdAndUpdate(
+      { _id: cartItemId },
+      { $set: update },
+      { new: true }
+    );
+    res.status(200).send(cartItem);
+    console.log(cartItem);
+  } catch (err) {
+    console.log(err);
+  }
+});
 // const completeOrder=asyncHandler(async(req,res)=>{
 
 // console.log(cartItemsId);
@@ -62,23 +82,23 @@ const completeOrder = asyncHandler(async (req, res) => {
     const find = await Cart.findById(id);
     console.log(find.productId);
     const prodId = await Product.findById(find.productId);
-    const update = { stock: prodId.stock - find.count };
-    await Product.findByIdAndUpdate(find.productId, update, { new: true });
-    const addToMyOrders = await MyOrders.create({
-      User: req.user,
-      paymentId: paymentId,
-      productId: prodId,
-      quantity: find.count,
-    });
-    await Cart.findByIdAndDelete(find);
-    console.log(addToMyOrders);
-    // console.log(prodId)
-    // const update={stock}
-    res.send(prodId);
+    if (prodId.stock >= find.count) {
+      const update = { stock: prodId.stock - find.count };
+      await Product.findByIdAndUpdate(find.productId, update, { new: true });
+      const addToMyOrders = await MyOrders.create({
+        User: req.user,
+        paymentId: paymentId,
+        productId: prodId,
+        quantity: find.count,
+      });
+      await Cart.findByIdAndDelete(find);
+      console.log(addToMyOrders);
+      res.status(200).json({status:"order created successfully"});
+    }
     console.log(find);
   } catch (error) {
-    res.json({ message: error });
+    res.status(400).json({ message: "Some error occured" });
     console.log(error);
   }
 });
-module.exports = { createOrder, cartItems, completeOrder };
+module.exports = { createOrder, cartItems, completeOrder,updateCartItem };

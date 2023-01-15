@@ -23,3 +23,4 @@ router.route("/delete/:id").delete(adminCheck, deleteProduct);
 // router.route('/')
 
 module.exports = router;
+ 
