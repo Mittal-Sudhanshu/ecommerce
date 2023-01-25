@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "This is a sample application backend that demonstrates an E-commerce site. The backend helps application in loading products from a MongoDB database and displays them. Users can select to display products in a single category. Users can \r click on any product to get more information including pricing, reviews and rating. Users can select items and \r add them to their shopping cart",
   "main": "index.js",
+  "engines": {"node":"16.17.0"},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"nodemon index.js"
   },
   "repository": {
     "type": "git",
