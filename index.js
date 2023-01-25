@@ -42,6 +42,7 @@ const io = require("socket.io")(server, {
 
 io.on("connection", (socket) => {
   console.log(socket.id);
+  console.log("connection")
   // io.on ("test", (message) =>console.log("hello world"));
   // socket.on()
   
