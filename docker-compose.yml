@@ -1,0 +1,149 @@
+version: '3.8'
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+  
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kafka-topics-generator:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    command: >
+      bash -c
+        "sleep 5s &&
+        kafka-topics --create --topic user-registered --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181 &&
+        kafka-topics --create --topic user-updated --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181 &&
+        kafka-topics --create --topic product-created --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181 &&
+        kafka-topics --create --topic order-placed --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181 &&
+        kafka-topics --create --topic inventory-updated --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181
+        kafka-topics --create --topic dlq-topic --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181"
+    
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+
+  dlq-service:
+    build: "./dlq-service"
+    ports:
+      - 8000:8000
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER: kafka:29092
+      
+    container_name: dlq-service
+
+
+  user-service:
+    build: "./user-service"
+    ports:
+      - 5000:5000
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      dlq-service:
+        condition: service_started
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/userdb
+      KAFKA_BROKER: kafka:29092
+      JWT_SECRET: somerandomsecretforJWTAuthentication
+
+    container_name: user-service
+    volumes:
+      - user_service_data:/app/data
+  
+  product-service:
+    build: "./product-service"
+    ports:
+      - 5002:5002
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      dlq-service:
+        condition: service_started
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/productdb
+      KAFKA_BROKER: kafka:29092
+      JWT_SECRET: somerandomsecretforJWTAuthentication
+      
+
+    container_name: product-service
+    volumes:
+      - product_service_data:/app/data
+  
+  order-service:
+    build: "./order-service"
+    ports:
+      - 5001:5001
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      dlq-service:
+        condition: service_started
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/orderdb
+      KAFKA_BROKER: kafka:29092
+      JWT_SECRET: somerandomsecretforJWTAuthentication
+
+    container_name: order-service
+    volumes:
+      - order_service_data:/app/data
+  
+  graphql-gateway:
+    build: "./graphql-gateway"
+    ports:
+      - 4000:4000
+    depends_on:
+      user-service:
+        condition: service_started
+      product-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+    environment:
+      USER_API: http://user-service:5000
+      ORDER_API: http://order-service:5001
+      PRODUCT_API: http://product-service:5002
+    container_name: graphql-gateway
+
+volumes:
+  mongodb_data:
+  user_service_data:
+  product_service_data:
+  order_service_data:

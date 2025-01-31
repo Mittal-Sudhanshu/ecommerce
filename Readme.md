@@ -1,32 +1,57 @@
-# E-commerce Demo
+# Microservices E-Commerce Application
 
-This is a sample application backend that demonstrates an E-commerce site. The backend helps application in loading products from a MongoDB database and displays them. Users can select to display products in a single category. Users can 
-click on any product to get more information including pricing, reviews and rating. Users can select items and 
-add them to their shopping cart
+## Overview
+This project is a microservices-based e-commerce application consisting of User Service, Product Service, Order Service, and a GraphQL Gateway. It uses Kafka for event-driven communication between services and MongoDB for data storage.
 
-## Getting Started
 
-Are you an open source contributor? Interested in contributing to open source projects?
-Then here you can start.
+## Flow Diagram
+![Flow Diagram of Application](image.png)
 
-To get started you can simply fork this `ecommerce` repository, clone it and install the dependencies.
+## Key Features
+- User registration and authentication
+- Product management and inventory
+- Order processing and management
+- GraphQL API for client applications
+- Event-driven communication using Kafka
+- Custom Dead Letter Queue (DLQ) for handling failed messages
 
-Please refer to the [CONTRIBUTING.md](https://github.com/Mittal-Sudhanshu/ecommerce/CONTRIBUTING.md) file if you are unsure how to perform the actions listed above.
 
-Install dependencies with this command:
-```bash
-npm install
-```
+## Architecture
+- User Service: Manages user registration, authentication, and profiles
+- Product Service: Handles product management and inventory
+- Order Service: Processes and manages orders
+- GraphQL Gateway: Provides a unified API for client applications
+- Kafka: Used for inter-service communication
+- DLQ Service: Manages messages that fail processing
+- MongoDB: Database for all services
 
-Run the application with this command:
-```bash
-npm start
-```
+## Prerequisites
+- Docker
+- Docker Compose
 
-## Tech Stack
-* Node.js
-* Express.js
-* Mongoose
-* bcrypt
-* nodemailer
-* jsonwebtoken
+## Quick Start
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/mittal-sudhanshu/ecommerce
+   cd microservice-ecom
+   ```
+
+2. Start the services:
+   ```
+   docker-compose up -d
+   ```
+
+3. The services will be available at:
+   - GraphQL Gateway: http://localhost:4000
+   - User Service: http://localhost:5000
+   - Product Service: http://localhost:5002
+   - Order Service: http://localhost:5001
+   - Dlq Service: http://localhost:8000
+
+## Service Specific READMEs
+- [User Service](./user-service/README.md)
+- [Product Service](./product-service/README.md)
+- [Order Service](./order-service/README.md)
+- [GraphQL Gateway](./graphql-gateway/README.md)
+- [DLQ Service](./dlq-service/README.md)
