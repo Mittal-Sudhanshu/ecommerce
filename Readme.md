@@ -34,7 +34,7 @@ This project is a microservices-based e-commerce application consisting of User 
 1. Clone the repository:
    ```
    git clone https://github.com/mittal-sudhanshu/ecommerce
-   cd microservice-ecom
+   cd ecommerce
    ```
 
 2. Start the services:
